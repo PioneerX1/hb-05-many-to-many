@@ -4,11 +4,13 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import com.pioneerx.hibernate.demo.entity.Course;
 import com.pioneerx.hibernate.demo.entity.Instructor;
 import com.pioneerx.hibernate.demo.entity.InstructorDetail;
+import com.pioneerx.hibernate.demo.entity.Review;
 import com.pioneerx.hibernate.demo.entity.Student;
 
-public class GetInstructorDetailDemo {
+public class DeleteMaryStudentDemo {
 
 	public static void main(String[] args) {
 		
@@ -17,40 +19,31 @@ public class GetInstructorDetailDemo {
 				.configure("hibernate.cfg.xml")
 				.addAnnotatedClass(Instructor.class)
 				.addAnnotatedClass(InstructorDetail.class)
+				.addAnnotatedClass(Course.class)
+				.addAnnotatedClass(Review.class)
+				.addAnnotatedClass(Student.class)
 				.buildSessionFactory();
 		
 		// create session
 		Session session = factory.getCurrentSession();
 		
 		try {
-			
 			// start transaction
-			System.out.println("Beginning transaction ....");
 			session.beginTransaction();
-
-			// get instructor detail object
-			int tempId = 3;
-			InstructorDetail tempInstructorDetail = 
-					session.get(InstructorDetail.class, tempId);
 			
-			// print instructor detail
-			System.out.println("tempInstructorDetail: " + tempInstructorDetail);
+			// get the student Mary from the db
+			int maryId = 2;
+			Student student = session.get(Student.class, maryId);
 			
-			// print associated instructor
-			System.out.println("associated instructor: " + tempInstructorDetail.getInstructor());
-
+			// delete Mary
+			session.delete(student);
+			
 			// commit transaction
-			System.out.println("Commiting transaction....");
 			session.getTransaction().commit();
 			
-			System.out.println("Done!");
 			
-		} catch (Exception e) {
-			e.printStackTrace();
 		} finally {
-			// handle connection leak issue
 			session.close();
-			
 			factory.close();
 		}
 

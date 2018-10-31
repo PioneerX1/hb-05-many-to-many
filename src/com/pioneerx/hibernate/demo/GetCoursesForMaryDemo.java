@@ -4,11 +4,13 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import com.pioneerx.hibernate.demo.entity.Course;
 import com.pioneerx.hibernate.demo.entity.Instructor;
 import com.pioneerx.hibernate.demo.entity.InstructorDetail;
+import com.pioneerx.hibernate.demo.entity.Review;
 import com.pioneerx.hibernate.demo.entity.Student;
 
-public class CreateDemo {
+public class GetCoursesForMaryDemo {
 
 	public static void main(String[] args) {
 		
@@ -17,38 +19,31 @@ public class CreateDemo {
 				.configure("hibernate.cfg.xml")
 				.addAnnotatedClass(Instructor.class)
 				.addAnnotatedClass(InstructorDetail.class)
+				.addAnnotatedClass(Course.class)
+				.addAnnotatedClass(Review.class)
+				.addAnnotatedClass(Student.class)
 				.buildSessionFactory();
 		
 		// create session
 		Session session = factory.getCurrentSession();
 		
 		try {
-			// create the objects
-			Instructor tempInstructor = 
-					new Instructor("Chet", "Baker", "baker@luv2code.com");
-			InstructorDetail tempInstructorDetail =
-					new InstructorDetail(
-							"http://www.bakercode.com/youtube",
-							"Bake some code!!");
-			
-			// associate the objects
-			tempInstructor.setInstructorDetail(tempInstructorDetail);
-			
 			// start transaction
-			System.out.println("Beginning transaction ....");
 			session.beginTransaction();
 			
-			// save the instructor, this will also save InstructorDetails cause of Cascading
-			System.out.println("Saving instructor: " + tempInstructor);
-			session.save(tempInstructor);
+			// get the student Mary from the db
+			int maryId = 2;
+			Student student = session.get(Student.class, maryId);
+			
+			// print Mary's courses
+			System.out.println("Mary's courses: " + student.getCourses());
 			
 			// commit transaction
-			System.out.println("Commiting transaction....");
 			session.getTransaction().commit();
 			
-			System.out.println("Done!");
 			
 		} finally {
+			session.close();
 			factory.close();
 		}
 

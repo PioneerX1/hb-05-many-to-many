@@ -7,8 +7,10 @@ import org.hibernate.cfg.Configuration;
 import com.pioneerx.hibernate.demo.entity.Course;
 import com.pioneerx.hibernate.demo.entity.Instructor;
 import com.pioneerx.hibernate.demo.entity.InstructorDetail;
+import com.pioneerx.hibernate.demo.entity.Review;
+import com.pioneerx.hibernate.demo.entity.Student;
 
-public class CreateCoursesDemo {
+public class AddCoursesForMaryDemo {
 
 	public static void main(String[] args) {
 		
@@ -18,6 +20,8 @@ public class CreateCoursesDemo {
 				.addAnnotatedClass(Instructor.class)
 				.addAnnotatedClass(InstructorDetail.class)
 				.addAnnotatedClass(Course.class)
+				.addAnnotatedClass(Review.class)
+				.addAnnotatedClass(Student.class)
 				.buildSessionFactory();
 		
 		// create session
@@ -27,17 +31,17 @@ public class CreateCoursesDemo {
 			// start transaction
 			session.beginTransaction();
 			
-			// get instructor from db
-			int id = 1;
-			Instructor tempInstructor = session.get(Instructor.class, id);
+			// get the student Mary from the db
+			int maryId = 2;
+			Student student = session.get(Student.class, maryId);
 			
-			// create some courses
-			Course course1 = new Course("Air Guitar - Ultimate Guide");
-			Course course2 = new Course("How to Maven your Java Spring for Camels");
+			// create more courses
+			Course course1 = new Course("How to steel the guit.");
+			Course course2 = new Course("Cryptocurrency");
 			
-			// add courses to instructor, set up bi directional relationship 
-			tempInstructor.add(course1);
-			tempInstructor.add(course2);
+			// add student Mary to those courses
+			course1.addStudent(student);
+			course2.addStudent(student);
 			
 			// save those courses
 			session.save(course1);
@@ -46,7 +50,6 @@ public class CreateCoursesDemo {
 			// commit transaction
 			session.getTransaction().commit();
 			
-			System.out.println("Done!");
 			
 		} finally {
 			session.close();

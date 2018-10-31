@@ -7,8 +7,10 @@ import org.hibernate.cfg.Configuration;
 import com.pioneerx.hibernate.demo.entity.Course;
 import com.pioneerx.hibernate.demo.entity.Instructor;
 import com.pioneerx.hibernate.demo.entity.InstructorDetail;
+import com.pioneerx.hibernate.demo.entity.Review;
+import com.pioneerx.hibernate.demo.entity.Student;
 
-public class GetInstructorCoursesDemo {
+public class DeletePacmanCourseDemo {
 
 	public static void main(String[] args) {
 		
@@ -18,6 +20,8 @@ public class GetInstructorCoursesDemo {
 				.addAnnotatedClass(Instructor.class)
 				.addAnnotatedClass(InstructorDetail.class)
 				.addAnnotatedClass(Course.class)
+				.addAnnotatedClass(Review.class)
+				.addAnnotatedClass(Student.class)
 				.buildSessionFactory();
 		
 		// create session
@@ -27,18 +31,16 @@ public class GetInstructorCoursesDemo {
 			// start transaction
 			session.beginTransaction();
 			
-			// get instructor from db
-			int id = 1;
-			Instructor tempInstructor = session.get(Instructor.class, id);
-			System.out.println("Instructor: " + tempInstructor);
+			// retrieve pacman course from db
+			int courseId = 10;
+			Course pacmanCourse = session.get(Course.class, courseId);
 			
-			// retrieve courses for the instructor
-			System.out.println("Courses: " + tempInstructor.getCourses());
+			// delete that course
+			session.delete(pacmanCourse);
 			
 			// commit transaction
 			session.getTransaction().commit();
 			
-			System.out.println("Done!");
 			
 		} finally {
 			session.close();

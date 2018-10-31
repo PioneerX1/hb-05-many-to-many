@@ -7,8 +7,9 @@ import org.hibernate.cfg.Configuration;
 import com.pioneerx.hibernate.demo.entity.Course;
 import com.pioneerx.hibernate.demo.entity.Instructor;
 import com.pioneerx.hibernate.demo.entity.InstructorDetail;
+import com.pioneerx.hibernate.demo.entity.Review;
 
-public class CreateInstructorDemo {
+public class CreateCourseAndReviewsDemo {
 
 	public static void main(String[] args) {
 		
@@ -18,33 +19,30 @@ public class CreateInstructorDemo {
 				.addAnnotatedClass(Instructor.class)
 				.addAnnotatedClass(InstructorDetail.class)
 				.addAnnotatedClass(Course.class)
+				.addAnnotatedClass(Review.class)
 				.buildSessionFactory();
 		
 		// create session
 		Session session = factory.getCurrentSession();
 		
 		try {
-			// create the objects
-			Instructor tempInstructor = 
-					new Instructor("Susan", "Public", "susan.public@luv2code.com");
-			InstructorDetail tempInstructorDetail =
-					new InstructorDetail(
-							"http://www.youtube.com",
-							"Gamer fo life");
-			
-			// associate the objects
-			tempInstructor.setInstructorDetail(tempInstructorDetail);
-			
 			// start transaction
-			System.out.println("Beginning transaction ....");
 			session.beginTransaction();
 			
-			// save the instructor, this will also save InstructorDetails cause of Cascading
-			System.out.println("Saving instructor: " + tempInstructor);
-			session.save(tempInstructor);
+			// create a course
+			Course tempCourse = new Course("Pacman - How to Score One Million Points");
+			
+			// add some reviews
+			tempCourse.addReview(new Review("Great course .... loved it!"));
+			tempCourse.addReview(new Review("It was adequate."));
+			tempCourse.addReview(new Review("What's Pacman???"));
+			
+			// save the course ... and leverage cascading ALL
+			session.save(tempCourse);
+			System.out.println("Saving course: " + tempCourse);
+			System.out.println("Saving course's reviews: " + tempCourse.getReviews());
 			
 			// commit transaction
-			System.out.println("Commiting transaction....");
 			session.getTransaction().commit();
 			
 			System.out.println("Done!");
